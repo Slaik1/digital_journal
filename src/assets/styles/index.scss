@@ -1,0 +1,40 @@
+@import './fonts.scss';
+
+:root {
+  --bg-root: #F2F5F9;
+  --font-color: #31303E;
+}
+
+#root {
+  display: flex;
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+html {
+  font-size: 16px;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+
+/* Убрать полосу прокрутки для всей страницы */
+body::-webkit-scrollbar {
+  width: 0;
+}
+
+body {
+  background: var(--bg-root);
+  color: var(--font-color);
+}
+
+.app {
+  height: 100%;
+  width: 100vw;
+}
