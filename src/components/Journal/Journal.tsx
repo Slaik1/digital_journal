@@ -1,26 +1,21 @@
-// eslint-disable-next-line import/no-unresolved
+import React, { useEffect, useMemo, useState } from 'react';
+import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { ColDef } from 'ag-grid-community';
-import { AgGridReact } from 'ag-grid-react'; // React Data Grid Component
-import 'ag-grid-community/styles/ag-grid.css'; // Mandatory CSS required by the grid
-import 'ag-grid-community/styles/ag-theme-quartz.css'; // Optional Theme applied to the grid
-import { ChangeEvent, useMemo, useState } from 'react';
-import { Input, Button } from 'antd';
+import { marks } from '../../api/mark/mark';
+import { TableData } from '../../ts/types/table';
+
+interface RowData {
+  ФИО: string;
+  [key: string]: any;
+}
 
 const GridExample = () => {
-  // Row Data: The data to be displayed.
-  const [rowData, setRowData] = useState([
-    { make: 'Tesla', model: 'Model Y', price: 64950, electric: true },
-    { make: 'Ford', model: 'F-Series', price: 33850, electric: false },
-    { make: 'Toyota', model: 'Corolla', price: 29600, electric: false },
-  ]);
+  const [rowData, setRowData] = useState<RowData[]>([]);
+  const [columnDefs, setColumnDefs] = useState<ColDef<any>[]>([]);
 
-  // Column Definitions: Defines the columns to be displayed.
-  const [columnDefs, setColumnDefs] = useState<ColDef[]>([
-    { field: 'make', pivot: true, initialHide:false },
-    { field: 'model' },
-    { field: 'price' },
-    { field: 'electric' },
-  ]);
+  console.log(rowData);
 
   const defaultColDef = useMemo<ColDef>(() => {
     return {
@@ -29,33 +24,65 @@ const GridExample = () => {
     };
   }, []);
 
-  const [inputValue, setInputValue] = useState('');
+  const getData = async () => {
+    const data: TableData = await marks.getTableMarks();
 
-  const addHandler = () => {
-    setColumnDefs((prev)=> [...prev, { field: inputValue },])
-  }
+    const dateColumns = data.lessonsDates.map((date) => ({
+      field: new Date(date).toLocaleDateString(),
+      headerName: new Date(date).toLocaleDateString(),
+    }));
 
-  const handleInputChange = (e:ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const columns: ColDef<any>[] = [
+      { field: 'ФИО', headerName: 'ФИО', pinned: 'left' },
+      ...dateColumns,
+    ];
 
-    setInputValue(value);
+    setColumnDefs(columns);
+
+    const rows: RowData[] = data.studentsData.map((student) => {
+      const row: RowData = {
+        ФИО: `${student.student.lastName} ${student.student.firstName} ${student.student.patronymic}`,
+      };
+
+      data.lessonsDates.forEach((date) => {
+        const markDate = new Date(date).toISOString();
+        const mark = student.marks[markDate] || '';
+
+        // console.log(`Оценка для ${student.student.lastName} ${student.student.firstName} ${student.student.patronymic} на ${date}:`, mark);
+        row[new Date(date).toLocaleDateString()] = mark;
+      });
+
+      return row;
+    });
+
+    setRowData(rows);
   };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const rowData1 = [
+    {
+      '01.01.2024': 10,
+      '02.01.2024': 3,
+      '03.01.2024': 5,
+      ФИО: 'Колмык Вячеслав Викторович',
+    },
+  ];
 
   return (
     <div>
       <div
-        className="ag-theme-quartz" // applying the grid theme
-        style={{ height: '50dvh' }} // the grid will fill the size of the parent container
+        className="ag-theme-alpine"
+        style={{ height: '50vh', width: '100%' }}
       >
         <AgGridReact
-          rowData={rowData}
+          rowData={rowData1}
           columnDefs={columnDefs}
-          rowSelection="multiple"
           defaultColDef={defaultColDef}
         />
       </div>
-      <Input value={inputValue} onChange={handleInputChange}/>
-      <Button onClick={addHandler}>Добавить</Button>
     </div>
   );
 };
