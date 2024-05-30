@@ -2,9 +2,9 @@ import { Layout } from 'antd';
 import { FC, useState } from 'react';
 
 import Aside from '../Aside/Aside';
+import Journal from '../Journal/Journal';
 
 import styles from './LayoutWrapper.module.scss';
-import Journal from '../Journal/Journal';
 
 const { Header, Sider, Content } = Layout;
 
@@ -17,13 +17,15 @@ const LayoutWrapper: FC = () => {
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
-        theme='light'
+        theme="light"
       >
         <Aside />
       </Sider>
       <Layout>
         {/* <Header className={styles.header}>header</Header> */}
-        <Content><Journal/></Content>
+        <Content>
+          <Journal />
+        </Content>
       </Layout>
     </Layout>
   );

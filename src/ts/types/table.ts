@@ -1,4 +1,4 @@
-interface Student {
+export interface Student {
   _id: string;
   firstName: string;
   lastName: string;
@@ -12,10 +12,8 @@ interface StudentData {
   };
 }
 
-export interface TableData {
+export interface MarksTable {
   _id: string;
-  startDate: string;
-  endDate: string;
   lessonsDates: string[];
   studentsData: StudentData[];
 }
