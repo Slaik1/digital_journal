@@ -2,12 +2,12 @@ import { Student } from './student';
 
 interface StudentData {
   student: Student;
-  marks: {
-    [date: string]: number;
+  attendance: {
+    [date: string]: boolean;
   };
 }
 
-export interface MarksJournal {
+export interface AttendanceJournal {
   _id: string;
   lessonsDates: string[];
   studentsData: StudentData[];

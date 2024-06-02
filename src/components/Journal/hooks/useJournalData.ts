@@ -2,28 +2,47 @@ import { useEffect, useState } from 'react';
 
 import api from '../../../api/api';
 import { journalsStore } from '../../../stores/journalsStore/journalsStore';
-import { MarksTable } from '../../../ts/types/table';
 
 const useJournalData = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isMarksLoading, setIsMarksLoading] = useState(false);
+  const [isAttendancesLoading, setIsAttendancesLoading] = useState(false);
 
-  const fetchData = async () => {
-    setIsLoading(true);
+  const fetchData = () => {
+    const journalId = journalsStore.currentJournalId;
 
-    const data: MarksTable = await api.mark.getMarksTable(
-      '663d37a8969366a8f9b74282'
+    if (!journalId) return;
+
+    fetchMarkData();
+    fetchAttendanceData();
+  };
+
+  const fetchMarkData = async () => {
+    setIsMarksLoading(true);
+
+    const data = await api.mark.getMarksJournal(journalsStore.currentJournalId);
+
+    journalsStore.setMarksJournal(data);
+
+    setIsMarksLoading(false);
+  };
+
+  const fetchAttendanceData = async () => {
+    setIsAttendancesLoading(true);
+
+    const data = await api.attendance.getAttendanceJournal(
+      journalsStore.currentJournalId
     );
 
-    journalsStore.setMarksTable(data);
+    journalsStore.setAttendanceJournal(data);
 
-    setIsLoading(false);
+    setIsAttendancesLoading(false);
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [journalsStore.currentJournalId]);
 
-  return isLoading;
+  return { isMarksLoading, isAttendancesLoading };
 };
 
 export default useJournalData;

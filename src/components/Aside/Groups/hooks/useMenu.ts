@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import api from '../../../api/api';
-import { MenuData } from '../../../api/faculty/faculty';
+import api from '../../../../api/api';
+import { MenuData } from '../../../../api/faculty/faculty';
 
 const useMenu = () => {
   const [menuData, setMenuData] = useState<MenuData[]>();

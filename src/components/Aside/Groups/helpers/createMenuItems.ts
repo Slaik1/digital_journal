@@ -1,5 +1,5 @@
-import { MenuData } from '../../../api/faculty/faculty';
-import { MenuItem } from '../../../ts/types/menu';
+import { MenuData } from '../../../../api/faculty/faculty';
+import { MenuItem } from '../../../../ts/types/menu';
 
 export const createMenuItems = (data: MenuData[]): MenuItem[] => {
   const items = data.map((faculty) => ({
@@ -9,7 +9,7 @@ export const createMenuItems = (data: MenuData[]): MenuItem[] => {
       key: group._id,
       label: group.title,
       children: group.journals.map((journal) => ({
-        key: journal.lesson._id,
+        key: journal._id,
         label: journal.lesson.title,
       })),
     })),

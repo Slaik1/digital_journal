@@ -1,12 +1,20 @@
+import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
 
-import DataTable from './DataTable/DataTable';
+import { journalsStore } from '../../stores/journalsStore/journalsStore';
+
+import AttendanceTable from './AttendanceTable/AttendanceTable';
 import useJournalData from './hooks/useJournalData';
+import MarkTable from './MarkTable/MarkTable';
 
 const Journal: FC = () => {
   const isLoading = useJournalData();
 
-  return <DataTable isLoading={true} />;
+  return journalsStore.journalType === 'mark' ? (
+    <MarkTable />
+  ) : (
+    <AttendanceTable />
+  );
 };
 
-export default Journal;
+export default observer(Journal);
