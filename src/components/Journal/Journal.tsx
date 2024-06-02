@@ -10,10 +10,14 @@ import MarkTable from './MarkTable/MarkTable';
 const Journal: FC = () => {
   const isLoading = useJournalData();
 
-  return journalsStore.journalType === 'mark' ? (
-    <MarkTable />
-  ) : (
-    <AttendanceTable />
+  return (
+    <div className="ag-theme-alpine" style={{ height: '100vh', width: '100%' }}>
+      {journalsStore.journalType === 'mark' ? (
+        <MarkTable />
+      ) : (
+        <AttendanceTable />
+      )}
+    </div>
   );
 };
 

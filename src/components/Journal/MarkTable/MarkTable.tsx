@@ -4,16 +4,15 @@ import { FC, useMemo } from 'react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { ColDef, CellEditingStoppedEvent } from 'ag-grid-community';
-
-import useTableData from '../hooks/useTableData';
+import useMarkTableData from './hooks/useMarkTableData';
 
 const MarkTable: FC = () => {
-  const { columnDefs, markRowData } = useTableData();
+  const { columnDefs, rowData } = useMarkTableData();
 
   const defaultColDef = useMemo<ColDef>(() => {
     return {
       filter: true,
-      editable: true,
+      editable: false,
     };
   }, []);
 
@@ -30,15 +29,13 @@ const MarkTable: FC = () => {
   };
 
   return (
-    <div className="ag-theme-alpine" style={{ height: '100vh', width: '100%' }}>
-      <AgGridReact
-        rowData={markRowData}
-        columnDefs={columnDefs}
-        defaultColDef={defaultColDef}
-        localeText={localeText}
-        // onCellEditingStopped={onCellEditingStopped}
-      />
-    </div>
+    <AgGridReact
+      rowData={rowData}
+      columnDefs={columnDefs}
+      defaultColDef={defaultColDef}
+      localeText={localeText}
+      // onCellEditingStopped={onCellEditingStopped}
+    />
   );
 };
 

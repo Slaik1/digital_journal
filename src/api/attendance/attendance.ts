@@ -17,4 +17,11 @@ export const attendance = {
 
     return data;
   },
+  setValue: async (id: string, value: boolean) => {
+    const res = await axios.put(ENDPOINT + 'setValue', { id, value });
+
+    const data = res.data;
+
+    return data;
+  },
 };
