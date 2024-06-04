@@ -1,16 +1,21 @@
+import { ColDef } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
+import classNames from 'classnames';
 import { FC, useMemo } from 'react';
 
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { ColDef, CellEditingStoppedEvent } from 'ag-grid-community';
 
-import { localeText } from '../constants';
+import { LOCALE_TEXT } from '../constants';
+
 import useAttendanceTableData from './hooks/useAttendanceTableData';
 
-import styles from './AttendanceTable.module.scss';
 
-const AttendanceTable: FC = () => {
+interface AttendanceTableProps {
+  className?: string;
+}
+
+const AttendanceTable: FC<AttendanceTableProps> = ({ className = '' }) => {
   const { rowData, columnDefs } = useAttendanceTableData();
 
   const defaultColDef = useMemo<ColDef>(() => {
@@ -19,13 +24,17 @@ const AttendanceTable: FC = () => {
     };
   }, []);
 
+  const gridStyles = classNames({
+    [className]: !!className,
+  });
+
   return (
     <AgGridReact
       rowData={rowData}
       columnDefs={columnDefs}
       defaultColDef={defaultColDef}
-      localeText={localeText}
-      className={styles.header}
+      localeText={LOCALE_TEXT}
+      className={gridStyles}
     />
   );
 };

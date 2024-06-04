@@ -3,7 +3,10 @@ import { Student } from './student';
 interface StudentData {
   student: Student;
   marks: {
-    [date: string]: number;
+    [date: string]: {
+      value: boolean;
+      _id: string;
+    };
   };
 }
 

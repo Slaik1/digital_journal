@@ -1,9 +1,12 @@
 import { ColDef } from 'ag-grid-community';
+// eslint-disable-next-line import/named
+import { valueType } from 'antd/es/statistic/utils';
 import { useEffect, useState } from 'react';
 
 import { journalsStore } from '../../../../stores/journalsStore/journalsStore';
 import { MarksJournal } from '../../../../ts/types/table';
 import { getStudentFullName } from '../../helpers/getStudentFullName';
+import MarkField from '../MarkField/MarkField';
 
 interface RowData {
   ФИО: string;
@@ -19,11 +22,18 @@ const useMarkTableData = () => {
     const dateColumns = data.lessonsDates.map((date) => ({
       field: date.substring(0, 10),
       headerName: new Date(date).toLocaleDateString(),
-      valueGetter: (params: any) => params.data[params.colDef.field!]?.value,
-      valueSetter: (params: any) => {
-        params.data[params.colDef.field!].value = params.newValue;
+      cellRenderer: (params: any) => {
+        const value = params.value.value;
+        const onChange = (newValue: number) => {
+          params.node.setDataValue(params.colDef.field, {
+            value: newValue,
+            _id: params.value._id,
+          });
+        };
 
-        return true;
+        return (
+          <MarkField value={value} onChange={onChange} id={params.value._id} />
+        );
       },
     }));
 
@@ -42,9 +52,15 @@ const useMarkTableData = () => {
       };
 
       data.lessonsDates.forEach((date) => {
-        const mark = students.marks[date] || null;
+        const mark = students.marks[date];
 
-        row[date.substring(0, 10)] = { value: mark, _id: date };
+        const markValue = mark ? mark.value : null;
+        const markId = mark ? mark._id : null;
+
+        row[date.substring(0, 10)] = {
+          value: markValue,
+          _id: markId,
+        };
       });
 
       return row;

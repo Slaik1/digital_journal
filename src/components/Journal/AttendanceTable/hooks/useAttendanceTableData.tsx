@@ -59,6 +59,7 @@ const useAttendanceTableData = () => {
 
       data.lessonsDates.forEach((date) => {
         const attendance = student.attendance[date];
+
         const attendanceValue = attendance ? attendance.value : false;
         const attendanceId = attendance ? attendance._id : null;
 

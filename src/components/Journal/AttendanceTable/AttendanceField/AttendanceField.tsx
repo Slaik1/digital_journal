@@ -2,8 +2,10 @@ import { Checkbox } from 'antd';
 // eslint-disable-next-line import/named
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import React from 'react';
-import styles from './AttendanceField.module.scss';
+
 import api from '../../../../api/api';
+
+import styles from './AttendanceField.module.scss';
 
 interface AttendanceFieldProps {
   id: string;

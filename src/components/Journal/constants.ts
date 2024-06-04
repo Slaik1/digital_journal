@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
-export const localeText = {
+export const LOCALE_TEXT = {
   noRowsToShow: 'Пожалуйста выберите предмет',
 };

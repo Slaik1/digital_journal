@@ -17,4 +17,11 @@ export const mark = {
 
     return data;
   },
+  setValue: async (id: string, value: number) => {
+    const res = await axios.put(ENDPOINT + 'setValue', { id, value });
+
+    const data = res.data;
+
+    return data;
+  },
 };
