@@ -1,15 +1,14 @@
 import { ColDef } from 'ag-grid-community';
-// eslint-disable-next-line import/named
-import { valueType } from 'antd/es/statistic/utils';
 import { useEffect, useState } from 'react';
 
 import { journalsStore } from '../../../../stores/journalsStore/journalsStore';
+import { Mark } from '../../../../ts/types/mark';
 import { MarksJournal } from '../../../../ts/types/table';
-import { getStudentFullName } from '../../helpers/getStudentFullName';
+import { getStudentInitials } from '../../helpers/getStudentFullName';
 import MarkField from '../MarkField/MarkField';
 
 interface RowData {
-  ФИО: string;
+  info: object;
   [key: string]: any;
 }
 
@@ -24,21 +23,46 @@ const useMarkTableData = () => {
       headerName: new Date(date).toLocaleDateString(),
       cellRenderer: (params: any) => {
         const value = params.value.value;
-        const onChange = (newValue: number) => {
+        const studentId = params.data.info.id;
+
+        const onChange = (newValue: number | null) => {
           params.node.setDataValue(params.colDef.field, {
             value: newValue,
             _id: params.value._id,
           });
         };
 
+        const onPost = (mark: Mark) => {
+          const { _id, value } = mark;
+
+          params.node.setDataValue(params.colDef.field, {
+            value: value,
+            id: _id,
+          });
+        };
+
         return (
-          <MarkField value={value} onChange={onChange} id={params.value._id} />
+          <MarkField
+            date={date}
+            onPost={onPost}
+            studentId={studentId}
+            value={value}
+            onChange={onChange}
+            id={params.value._id}
+          />
         );
       },
     }));
 
     const columns: ColDef[] = [
-      { field: 'ФИО', headerName: 'ФИО', pinned: 'left' },
+      {
+        field: 'info',
+        headerName: 'ФИО',
+        pinned: 'left',
+        cellRenderer: (params: any) => {
+          return <p>{params.value.name}</p>;
+        },
+      },
       ...dateColumns,
     ];
 
@@ -47,8 +71,13 @@ const useMarkTableData = () => {
 
   const createRowData = (data: MarksJournal) => {
     const rows: RowData[] = data.studentsData.map((students) => {
+      const studentData = students.student;
+
       const row: RowData = {
-        ФИО: getStudentFullName(students.student),
+        info: {
+          name: getStudentInitials(studentData),
+          id: studentData._id,
+        },
       };
 
       data.lessonsDates.forEach((date) => {

@@ -10,7 +10,6 @@ import { LOCALE_TEXT } from '../constants';
 
 import useAttendanceTableData from './hooks/useAttendanceTableData';
 
-
 interface AttendanceTableProps {
   className?: string;
 }
@@ -20,7 +19,7 @@ const AttendanceTable: FC<AttendanceTableProps> = ({ className = '' }) => {
 
   const defaultColDef = useMemo<ColDef>(() => {
     return {
-      filter: false,
+      filter: true,
     };
   }, []);
 

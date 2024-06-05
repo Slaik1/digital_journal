@@ -4,7 +4,7 @@ interface StudentData {
   student: Student;
   marks: {
     [date: string]: {
-      value: boolean;
+      value: boolean | null;
       _id: string;
     };
   };

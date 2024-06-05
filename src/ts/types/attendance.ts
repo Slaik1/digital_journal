@@ -15,3 +15,12 @@ export interface AttendanceJournal {
   lessonsDates: string[];
   studentsData: StudentData[];
 }
+
+export interface Attendance {
+  _id: string;
+  journal: string;
+  student: string;
+  teacher: string;
+  date: string;
+  value: boolean;
+}

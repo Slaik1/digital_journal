@@ -1,28 +1,29 @@
-import { Layout } from 'antd';
+import { Layout, Menu } from 'antd';
 import { FC, useState } from 'react';
 
 import Aside from '../Aside/Aside';
 import Journal from '../Journal/Journal';
+import MainHeader from '../MainHeader/MainHeader';
 
 import styles from './LayoutWrapper.module.scss';
 
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 const LayoutWrapper: FC = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
     <Layout className={styles.layout}>
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-        theme="light"
-      >
-        <Aside />
-      </Sider>
+      <MainHeader />
       <Layout>
-        {/* <Header className={styles.header}>header</Header> */}
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+          theme="light"
+        >
+          <Aside />
+        </Sider>
         <Content>
           <Journal />
         </Content>

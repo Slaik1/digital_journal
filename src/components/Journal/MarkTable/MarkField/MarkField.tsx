@@ -1,33 +1,81 @@
-import { Checkbox, Flex, InputNumber } from 'antd';
-
+import { InputNumber } from 'antd';
 // eslint-disable-next-line no-duplicate-imports
 import type { InputNumberProps } from 'antd';
-
-// eslint-disable-next-line import/named
-import { valueType } from 'antd/es/statistic/utils';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import api from '../../../../api/api';
+import { debounce } from '../../../../helpers/debounce';
+import { journalsStore } from '../../../../stores/journalsStore/journalsStore';
+import { Mark } from '../../../../ts/types/mark';
 
 import styles from './MarkField.module.scss';
 
 interface MarkFieldProps {
   id: string;
   value: number;
-  onChange: (newValue: number) => void;
+  date: string;
+  studentId: string;
+  onChange: (newValue: number | null) => void;
+  onPost: (attendance: Mark) => void;
 }
 
-const MarkField: React.FC<MarkFieldProps> = ({ id, value, onChange }) => {
-  const handleChange: InputNumberProps['onChange'] = async (value) => {
-    if (!value) return;
+const MarkField: React.FC<MarkFieldProps> = ({
+  id,
+  value,
+  date,
+  studentId,
+  onChange,
+  onPost,
+}) => {
+  const { markJournal } = journalsStore;
+  const journalId = markJournal?._id;
 
+  const setApiData = useCallback(
+    debounce(async (newValue: number) => {
+      console.log('setApiData called with newValue:', newValue);
+
+      let resData = null;
+
+      console.log(id, 'id');
+
+      if (id) {
+        if (newValue === 0 || newValue === null) {
+          console.log('Deleting mark');
+          resData = await api.mark.delete(id);
+          console.log('Mark deleted');
+
+          return;
+        }
+        console.log('Setting new value');
+        resData = await api.mark.setValue(id, newValue);
+      } else {
+        if (!journalId) return;
+
+        console.log('Adding new mark');
+        resData = await api.mark.addMark(
+          journalId,
+          studentId,
+          '663d386a969366a8f9b74289',
+          newValue,
+          date
+        );
+        onPost(resData);
+      }
+
+      console.log('Заменено на', resData.value);
+    }, 2000),
+    []
+  );
+
+  const handleChange: InputNumberProps['onChange'] = async (value) => {
     const newValue = Number(value);
 
-    onChange(newValue);
-
-    const data = await api.mark.setValue(id, newValue);
-
-    console.log('Заменено на', data.value);
+    if (newValue === 0) {
+      onChange(null);
+    } else {
+      onChange(newValue);
+    }
+    setApiData(newValue);
   };
 
   return (
@@ -36,7 +84,7 @@ const MarkField: React.FC<MarkFieldProps> = ({ id, value, onChange }) => {
       className={styles.field}
       value={value}
       onChange={handleChange}
-      min={1}
+      min={0}
       max={10}
       changeOnWheel
     />

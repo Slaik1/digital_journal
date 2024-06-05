@@ -1,17 +1,13 @@
 import { ColDef } from 'ag-grid-community';
-import { Checkbox } from 'antd';
-import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { useEffect, useState } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
 
 import { journalsStore } from '../../../../stores/journalsStore/journalsStore';
-import { AttendanceJournal } from '../../../../ts/types/attendance';
-import { MarksJournal } from '../../../../ts/types/table';
-import { getStudentFullName } from '../../helpers/getStudentFullName';
+import { Attendance, AttendanceJournal } from '../../../../ts/types/attendance';
+import { getStudentInitials } from '../../helpers/getStudentFullName';
 import AttendanceField from '../AttendanceField/AttendanceField';
 
 interface RowData {
-  ФИО: string;
+  info: object;
   [key: string]: any;
 }
 
@@ -26,6 +22,8 @@ const useAttendanceTableData = () => {
       headerName: new Date(date).toLocaleDateString(),
       cellRenderer: (params: any) => {
         const value = params.value.value;
+        const studentId = params.data.info.id;
+
         const onChange = (newValue: boolean) => {
           params.node.setDataValue(params.colDef.field, {
             value: newValue,
@@ -33,18 +31,37 @@ const useAttendanceTableData = () => {
           });
         };
 
+        const onPost = (attendance: Attendance) => {
+          const { _id, value } = attendance;
+
+          params.node.setDataValue(params.colDef.field, {
+            value: value,
+            _id: _id,
+          });
+        };
+
         return (
           <AttendanceField
             value={value}
-            onChange={onChange}
+            date={date}
             id={params.value._id}
+            studentId={studentId}
+            onChange={onChange}
+            onPost={onPost}
           />
         );
       },
     }));
 
     const columns: ColDef[] = [
-      { field: 'ФИО', headerName: 'ФИО', pinned: 'left' },
+      {
+        field: 'info',
+        headerName: 'ФИО',
+        pinned: 'left',
+        cellRenderer: (params: any) => {
+          return <p>{params.value.name}</p>;
+        },
+      },
       ...dateColumns,
     ];
 
@@ -52,13 +69,18 @@ const useAttendanceTableData = () => {
   };
 
   const createRowData = (data: AttendanceJournal) => {
-    const rows: RowData[] = data.studentsData.map((student) => {
+    const rows: RowData[] = data.studentsData.map((students) => {
+      const studentData = students.student;
+
       const row: RowData = {
-        ФИО: getStudentFullName(student.student),
+        info: {
+          name: getStudentInitials(studentData),
+          id: studentData._id,
+        },
       };
 
       data.lessonsDates.forEach((date) => {
-        const attendance = student.attendance[date];
+        const attendance = students.attendance[date];
 
         const attendanceValue = attendance ? attendance.value : false;
         const attendanceId = attendance ? attendance._id : null;
