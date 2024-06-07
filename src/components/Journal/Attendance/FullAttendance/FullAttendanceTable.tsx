@@ -6,7 +6,7 @@ import { FC, useMemo } from 'react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
-import { LOCALE_TEXT } from '../constants';
+import { LOCALE_TEXT } from '../../constants';
 
 import useAttendanceTableData from './hooks/useAttendanceTableData';
 
@@ -14,7 +14,7 @@ interface AttendanceTableProps {
   className?: string;
 }
 
-const AttendanceTable: FC<AttendanceTableProps> = ({ className = '' }) => {
+const FullAttendanceTable: FC<AttendanceTableProps> = ({ className = '' }) => {
   const { rowData, columnDefs } = useAttendanceTableData();
 
   const defaultColDef = useMemo<ColDef>(() => {
@@ -27,6 +27,8 @@ const AttendanceTable: FC<AttendanceTableProps> = ({ className = '' }) => {
     [className]: !!className,
   });
 
+  console.log(columnDefs, 'columnDefs');
+
   return (
     <AgGridReact
       rowData={rowData}
@@ -38,4 +40,4 @@ const AttendanceTable: FC<AttendanceTableProps> = ({ className = '' }) => {
   );
 };
 
-export default AttendanceTable;
+export default FullAttendanceTable;

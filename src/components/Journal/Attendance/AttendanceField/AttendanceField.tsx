@@ -1,6 +1,7 @@
-import { Checkbox } from 'antd';
+import { Checkbox, Tooltip } from 'antd';
 // eslint-disable-next-line import/named
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
+import dayjs from 'dayjs';
 import React, { useCallback } from 'react';
 
 import api from '../../../../api/api';
@@ -42,7 +43,7 @@ const AttendanceField: React.FC<AttendanceFieldProps> = ({
           journalId,
           studentId,
           '663d386a969366a8f9b74289',
-          value,
+          newValue,
           date
         );
 

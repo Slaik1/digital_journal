@@ -1,11 +1,12 @@
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { journalsStore } from '../../stores/journalsStore/journalsStore';
+import { settingsStore } from '../../stores/settingsStore/settingsStore';
 
-import AttendanceTable from './AttendanceTable/AttendanceTable';
+import CurrentAttendance from './Attendance/CurrentAttendance/CurrentAttendance';
+import FullAttendanceTable from './Attendance/FullAttendance/FullAttendanceTable';
 import useJournalData from './hooks/useJournalData';
 import MarkTable from './MarkTable/MarkTable';
 
@@ -15,6 +16,7 @@ const Journal: FC = () => {
   const isLoading = useJournalData();
 
   const { journalType } = journalsStore;
+  const { showFullAttendance } = settingsStore;
 
   const markStyles = classNames({
     [styles.table]: true,
@@ -28,7 +30,11 @@ const Journal: FC = () => {
 
   return (
     <div className="ag-theme-alpine" style={{ height: '100vh', width: '100%' }}>
-      <AttendanceTable className={attendanceStyles} />
+      {showFullAttendance ? (
+        <FullAttendanceTable className={attendanceStyles} />
+      ) : (
+        <CurrentAttendance className={attendanceStyles} />
+      )}
       <MarkTable className={markStyles} />
     </div>
   );

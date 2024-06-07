@@ -1,10 +1,13 @@
 import { ColDef } from 'ag-grid-community';
 import { useEffect, useState } from 'react';
 
-import { journalsStore } from '../../../../stores/journalsStore/journalsStore';
-import { Attendance, AttendanceJournal } from '../../../../ts/types/attendance';
-import { getStudentInitials } from '../../helpers/getStudentFullName';
-import AttendanceField from '../AttendanceField/AttendanceField';
+import { journalsStore } from '../../../../../stores/journalsStore/journalsStore';
+import {
+  Attendance,
+  AttendanceJournal,
+} from '../../../../../ts/types/attendance';
+import { getStudentInitials } from '../../../helpers/getStudentFullName';
+import AttendanceField from '../../AttendanceField/AttendanceField';
 
 interface RowData {
   info: object;

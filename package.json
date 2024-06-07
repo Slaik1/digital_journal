@@ -38,6 +38,7 @@
     "antd": "^5.17.0",
     "axios": "^1.4.0",
     "classnames": "^2.3.2",
+    "dayjs": "^1.11.11",
     "mobx": "^6.9.0",
     "mobx-react-lite": "^3.4.3",
     "react": "^18.2.0",
