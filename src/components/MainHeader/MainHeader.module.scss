@@ -1,0 +1,29 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  background: #fff;
+  padding-inline: 25px;
+
+  .linkWrapper {
+    display: flex;
+
+    .university {
+      color: var(--primary-color);
+      margin-right: 60px;
+      font-size: 20px;
+    }
+
+    .title {
+      color: var(--font-color);
+      font-size: 18px;
+    }
+  }
+
+  .settings {
+    margin-right: 100px;
+    margin-left: auto;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+}
