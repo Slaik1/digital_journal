@@ -2,8 +2,9 @@ import { Header } from 'antd/es/layout/layout';
 import { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import styles from './MainHeader.module.scss';
 import Settings from './Settings/Settings';
+
+import styles from './MainHeader.module.scss';
 
 const MainHeader: FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);

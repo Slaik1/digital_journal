@@ -1,4 +1,4 @@
-import { Layout, Menu } from 'antd';
+import { Layout } from 'antd';
 import { FC, useState } from 'react';
 
 import Aside from '../Aside/Aside';

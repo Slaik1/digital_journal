@@ -11,18 +11,16 @@ import { Mark } from '../../../../ts/types/mark';
 import styles from './MarkField.module.scss';
 
 interface MarkFieldProps {
-  id: string;
   value: number;
-  date: string;
   studentId: string;
+  work: string;
   onChange: (newValue: number | null) => void;
   onPost: (attendance: Mark) => void;
 }
 
 const MarkField: React.FC<MarkFieldProps> = ({
-  id,
   value,
-  date,
+  work,
   studentId,
   onChange,
   onPost,
@@ -32,38 +30,20 @@ const MarkField: React.FC<MarkFieldProps> = ({
 
   const setApiData = useCallback(
     debounce(async (newValue: number) => {
-      console.log('setApiData called with newValue:', newValue);
+      if (!journalId) return;
 
-      let resData = null;
+      const resData = await api.mark.setMark(
+        journalId,
+        studentId,
+        '663d386a969366a8f9b74289',
+        newValue,
+        work
+      );
 
-      console.log(id, 'id');
+      if (!resData.resData) return;
 
-      if (id) {
-        if (newValue === 0 || newValue === null) {
-          console.log('Deleting mark');
-          resData = await api.mark.delete(id);
-          console.log('Mark deleted');
-
-          return;
-        }
-        console.log('Setting new value');
-        resData = await api.mark.setValue(id, newValue);
-      } else {
-        if (!journalId) return;
-
-        console.log('Adding new mark');
-        resData = await api.mark.addMark(
-          journalId,
-          studentId,
-          '663d386a969366a8f9b74289',
-          newValue,
-          date
-        );
-        onPost(resData);
-      }
-
-      console.log('Заменено на', resData.value);
-    }, 2000),
+      onPost(resData.resData);
+    }, 1000),
     []
   );
 

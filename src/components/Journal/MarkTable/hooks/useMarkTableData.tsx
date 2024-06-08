@@ -1,10 +1,11 @@
-import { ColDef } from 'ag-grid-community';
+import { ColDef, ColGroupDef } from 'ag-grid-community';
 import { useEffect, useState } from 'react';
 
 import { journalsStore } from '../../../../stores/journalsStore/journalsStore';
 import { Mark } from '../../../../ts/types/mark';
 import { MarksJournal } from '../../../../ts/types/table';
 import { getStudentInitials } from '../../helpers/getStudentFullName';
+import { reduceWorkName } from '../../helpers/reduceWorkName';
 import MarkField from '../MarkField/MarkField';
 
 interface RowData {
@@ -14,47 +15,55 @@ interface RowData {
 
 const useMarkTableData = () => {
   const [rowData, setRowData] = useState<RowData[]>([]);
-  const [columnDefs, setColumnDefs] = useState<ColDef[]>([]);
+  const [columnDefs, setColumnDefs] = useState<Array<ColDef | ColGroupDef>>([]);
   const { markJournal } = journalsStore;
 
   const createColData = (data: MarksJournal) => {
-    const dateColumns = data.lessonsDates.map((date) => ({
-      field: date.substring(0, 10),
-      headerName: new Date(date).toLocaleDateString(),
-      cellRenderer: (params: any) => {
-        const value = params.value.value;
-        const studentId = params.data.info.id;
+    const moduleColumns: Array<ColDef | ColGroupDef> = data.modules.map(
+      (module) => ({
+        headerName: module.title,
+        openByDefault: true,
+        children: [
+          {
+            field: '1',
+            columnGroupShow: 'closed',
+            headerName: '',
+          },
+          ...module.works.map((work, workIndex) => ({
+            field: `${module.value}_${work.value}`,
+            headerName: reduceWorkName(work.title),
+            columnGroupShow: 'open',
+            cellRenderer: (params: any) => {
+              const value = params.value;
+              const studentId = params.data.info.id;
+              const work = params.colDef.field;
 
-        const onChange = (newValue: number | null) => {
-          params.node.setDataValue(params.colDef.field, {
-            value: newValue,
-            _id: params.value._id,
-          });
-        };
+              const onChange = (newValue: number | null) => {
+                params.node.setDataValue(params.colDef.field, newValue);
+              };
 
-        const onPost = (mark: Mark) => {
-          const { _id, value } = mark;
+              const onPost = (mark: Mark) => {
+                const { value } = mark;
 
-          params.node.setDataValue(params.colDef.field, {
-            value: value,
-            id: _id,
-          });
-        };
+                params.node.setDataValue(params.colDef.field, value);
+              };
 
-        return (
-          <MarkField
-            date={date}
-            onPost={onPost}
-            studentId={studentId}
-            value={value}
-            onChange={onChange}
-            id={params.value._id}
-          />
-        );
-      },
-    }));
+              return (
+                <MarkField
+                  onPost={onPost}
+                  studentId={studentId}
+                  value={value}
+                  onChange={onChange}
+                  work={work}
+                />
+              );
+            },
+          })),
+        ],
+      })
+    );
 
-    const columns: ColDef[] = [
+    const columns: Array<ColDef | ColGroupDef> = [
       {
         field: 'info',
         headerName: 'ФИО',
@@ -63,7 +72,7 @@ const useMarkTableData = () => {
           return <p>{params.value.name}</p>;
         },
       },
-      ...dateColumns,
+      ...moduleColumns,
     ];
 
     setColumnDefs(columns);
@@ -80,16 +89,14 @@ const useMarkTableData = () => {
         },
       };
 
-      data.lessonsDates.forEach((date) => {
-        const mark = students.marks[date];
+      data.modules.forEach((module) => {
+        module.works.forEach((work) => {
+          const mark = students.marks[`${module.value}_${work.value}`];
 
-        const markValue = mark ? mark.value : null;
-        const markId = mark ? mark._id : null;
+          const markValue = mark ? mark.value : null;
 
-        row[date.substring(0, 10)] = {
-          value: markValue,
-          _id: markId,
-        };
+          row[`${module.value}_${work.value}`] = markValue;
+        });
       });
 
       return row;

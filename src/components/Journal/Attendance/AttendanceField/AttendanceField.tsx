@@ -1,7 +1,6 @@
-import { Checkbox, Tooltip } from 'antd';
+import { Checkbox } from 'antd';
 // eslint-disable-next-line import/named
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
-import dayjs from 'dayjs';
 import React, { useCallback } from 'react';
 
 import api from '../../../../api/api';

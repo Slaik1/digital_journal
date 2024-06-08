@@ -1,17 +1,23 @@
 import { Student } from './student';
 
+interface Work {
+  title: string;
+  value: string;
+}
+
+interface Module {
+  title: string;
+  value: string;
+  works: Work[];
+}
+
 interface StudentData {
   student: Student;
-  marks: {
-    [date: string]: {
-      value: boolean | null;
-      _id: string;
-    };
-  };
+  marks: Record<string, { value: number | null; _id: string }>;
 }
 
 export interface MarksJournal {
   _id: string;
-  lessonsDates: string[];
+  modules: Module[];
   studentsData: StudentData[];
 }

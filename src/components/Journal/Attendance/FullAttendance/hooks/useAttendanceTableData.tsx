@@ -4,13 +4,13 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/ru'; // для русских сокращений дней недели
 import isoWeek from 'dayjs/plugin/isoWeek';
 
-import AttendanceField from '../../AttendanceField/AttendanceField';
 import { journalsStore } from '../../../../../stores/journalsStore/journalsStore';
 import {
   Attendance,
   AttendanceJournal,
 } from '../../../../../ts/types/attendance';
 import { getStudentInitials } from '../../../helpers/getStudentFullName';
+import AttendanceField from '../../AttendanceField/AttendanceField';
 
 interface RowData {
   info: object;
@@ -62,6 +62,8 @@ const useAttendanceTableData = () => {
         cellRenderer: (params: any) => {
           const value = params.value.value;
           const studentId = params.data.info.id;
+
+          console.log(params, 'params');
 
           const onChange = (newValue: boolean) => {
             params.node.setDataValue(params.colDef.field, {
